@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'second_page.dart'; // <--- IMPORTANTE: Importiamo il nuovo file
+import 'second_page.dart';
+import 'counter_service.dart'; // <--- Importiamo il servizio
 
 void main() {
   runApp(const MyApp());
@@ -12,12 +13,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Services Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Home Page'),
+      home: const MyHomePage(title: 'Flutter con Service'),
     );
   }
 }
@@ -31,11 +32,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  // Inizializziamo il servizio
+  final CounterService _counterService = CounterService();
 
-  void _incrementCounter() {
+  void _handleIncrement() {
     setState(() {
-      _counter++;
+      // Usiamo la logica del servizio
+      _counterService.increment();
     });
   }
 
@@ -50,19 +53,19 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('Contatore attuale:'),
+            const Text('Dati gestiti dal Service:'),
             Text(
-              '$_counter',
+              '${_counterService.currentCount}',
               style: GoogleFonts.lato(
                 fontSize: 60,
                 fontWeight: FontWeight.bold,
-                color: _counter % 2 == 0 ? Colors.green : Colors.red,
+                // Il colore lo decide il servizio!
+                color: _counterService.getCounterColor(),
               ),
             ),
-            const SizedBox(height: 30), // Spazio tra i widget
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // NAVIGAZIONE: Va alla seconda pagina
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SecondPage()),
@@ -74,8 +77,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: _handleIncrement,
+        tooltip: 'Incrementa',
         child: const Icon(Icons.add),
       ),
     );
